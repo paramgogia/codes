@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+ int data;
+ struct Node* next;
+};
+struct Node* createNode(int data) {
+ struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+ newNode->data = data;
+ newNode->next = NULL;
+ return newNode;
+}
+void append(struct Node** head, int data) {
+ struct Node* newNode = createNode(data);
+ if (*head == NULL) {
+ *head = newNode;
+ return;
+ }
+ struct Node* current = *head;
+ while (current->next != NULL) {
+ current = current->next;
+ }
+ current->next = newNode;
+}
+void printList(struct Node* head) {
+ struct Node* current = head;
+ while (current != NULL) {
+ printf("%d -> ", current->data);
+ current = current->next;
+ }
+ printf("NULL\n");
+}
+void swap(struct Node* head) {
+ struct Node* current = head;
+
+ while (current != NULL && current->next != NULL) {
+ int temp = current->data;
+ current->data = current->next->data;
+ current->next->data = temp;
+ current = current->next->next;
+ }
+}
+void freeList(struct Node* head) {
+ struct Node* current = head;
+ while (current != NULL) {
+ struct Node* temp = current;
+ current = current->next;
+ free(temp);
+ }
+}
+int main() {
+ struct Node* head = NULL;
+ int a;
+ int data;
+
+ printf("Enter Number of Elements in the List ");
+ scanf("%d", &a);
+ printf("Enter elements of the LinkedList:\n");
+ for (int i = 0; i < a; i++){
+ scanf("%d", &data);
+ append(&head, data);
+ }
+ printf("Original Linked List:\n");
+ printList(head);
+ swap(head);
+ printf("\nLinked List after swapping:\n");
+ printList(head);
+ freeList(head);
+ return 0;
+}
