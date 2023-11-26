@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node{
+    int key;
+    struct node* left, *right;
+};
+
+struct node* newNode(int data){
+    struct node* temp = (struct node*)malloc(sizeof(struct node));
+    temp->key = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+}
+
+struct node* insert(struct node* root, int key){
+    if(root == NULL){
+        return newNode(key);
+    }
+    if(key< root->key){
+        root->left = insert(root->left, key);
+    }else if(key> root->key){
+       root-> right = insert(root->right, key);
+    }
+    return root;
+}
+
+struct node* search(struct node* root, int key){
+    if(root->key == key || root ==NULL){
+        return root;
+    }
+    if(key>root->key){
+        search(root->right,key);
+    }else if(key<root->key){
+        search(root->left,key);
+    }
+    return root;
+}
+void preorder(struct node* root){
+    if(root == NULL){
+        return;
+    }
+    
+    printf("%d ",root->key);
+    preorder(root->left);
+    preorder(root->right);
+}
+void inorder(struct node* root){
+    if(root == NULL){
+        return;
+    }
+    inorder(root->left);
+    printf("%d ",root->key);
+ inorder(root->right);
+}
+void postorder(struct node* root){
+    if(root == NULL){
+        return;
+    }
+    postorder(root->left);
+    postorder(root->right);
+     printf("%d ",root->key);
+}
+int main(){
+    int n;
+    int key;
+    struct node* root = NULL;
+    printf("Enter the number of elements to be inserted\n");
+    scanf("%d", &n);
+    
+    printf("Enter the keys for BST\n");
+    for(int i = 0; i<n; i++){
+        scanf("%d", &key);
+       root = insert(root, key);
+    }
+    printf("The preorder Traversal of BST is: ");
+    preorder(root);
+    printf("\n");
+    printf("The Inorder Traversal of BST is: ");
+    inorder(root);
+    printf("\n");
+    printf("The Postorder Traversal of BST is: ");
+    postorder(root);
+}
