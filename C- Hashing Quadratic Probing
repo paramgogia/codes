@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+struct Entry{
+    int key;
+    char status;
+};
+
+struct Entry Hashtable[13];
+
+int hasfunction(int key){
+    return key%13;
+}
+
+void initialize(){
+    for(int i=0 ;i<13;i++){
+        Hashtable[i].key = 0;
+        Hashtable[i].status = 'E';
+    }
+}
+
+void insert(int key){
+    int index = hasfunction(key);
+    int indexo = index;
+    int i =1;
+    while(Hashtable[index].status =='O'){
+        index = (indexo + i*i)%13;
+        i++;
+        if(index == indexo){
+            printf("table full");
+            return;
+        }
+        
+    }
+    Hashtable[index].key = key;
+    Hashtable[index].status= 'O';
+    
+}
+
+int search(int key){
+    int index = hasfunction(key);
+    int indexo = index;
+    int i =1;
+    while(Hashtable[index].status=='O'){
+        if(Hashtable[index].status == 'O' && Hashtable[index].key == key){
+            return index;
+        }
+        index = (indexo+i*i)%13;
+        
+    }
+    if(index==indexo){
+        return -1;
+    }
+}
+
+void delete(int key){
+ 
+    int index = search(key);
+    if(index!=-1){
+        Hashtable[index].status= 'D';
+        printf("Deleted\n");
+    }else{
+        printf("Value Not found\n");
+    }
+}
+
+void display(){
+    for(int i=0 ;i<13;i++){
+        printf("index: %d\tkey: %d\tstatus: %c\n", i,Hashtable[i].key, Hashtable[i].status);
+    }
+}
+
+int main(){
+    
+    initialize();
+    bool run = true;
+    while(run){
+        int choice;
+        printf("enter 1 to insert \nEnter 2 to search\nEnter 3 to Delete\nEnter 4 to display\nEnter 5 to break\n");
+        scanf("%d", &choice);
+        switch(choice){
+            
+            case 1:
+                int key;
+                printf("Enter value to be inserted\n");
+                scanf("%d",&key);
+                insert(key);
+                break;
+            case 2:
+                int key2;
+                printf("Enter value to be searched\n");
+                scanf("%d",&key2);
+                int x = search(key2);
+                if(x!=-1){
+                    printf("value found at %d\n",x);
+                }else{
+                    printf("not found\n");
+                }
+                break;
+            case 3:
+                int key3;
+                printf("Enter value to be deleted\n");
+                scanf("%d",&key3);
+                delete(key3);
+                break;
+            case 4:
+                  display();
+                  break;
+            case 5:
+            run = false;
+                break;
+        
+        }
+    }
+    
+    return 0;
+}
