@@ -1,0 +1,152 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node* next;
+};
+
+struct queue {
+    int *arr;
+    int front;
+    int rear;
+    int capacity;
+    int size;
+};
+
+struct queue* createQueue(int capacity) {
+    struct queue* q = (struct queue*)malloc(sizeof(struct queue));
+    q->capacity = capacity;
+    q->size = 0;
+    q->rear = -1;
+    q->front = 0;
+    q->arr = (int*)malloc(sizeof(int) * capacity);
+    return q;
+}
+
+void enqueue(struct queue* q, int x) {
+    if (q->size == q->capacity) {
+        printf("Queue overflow\n");
+        return;
+    }
+    q->size++;
+    q->arr[++q->rear] = x;
+}
+
+int dequeue(struct queue* q) {
+    if (q->size == 0) {
+        printf("Queue underflow\n");
+        return -1;
+    }
+    q->size--;
+    int x = q->arr[q->front];
+    q->front++;
+    return x;
+}
+
+struct node* createNode(int data) {
+    struct node* n = (struct node*)malloc(sizeof(struct node));
+    n->data = data;
+    n->next = NULL;
+    return n;
+}
+
+struct node* insert(struct node* head, int data) {
+    struct node* n = createNode(data);
+    if (head == NULL) {
+        return n;
+    }
+    struct node* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = n;
+    return head;
+}
+
+void createGraph(struct node* graph[], int n) {
+    for (int i = 0; i < n; i++) {
+        graph[i] = NULL;
+        for (int j = 0; j < n; j++) {
+            char choice;
+            printf("Do you want an edge from %d to %d? (y/n): ", i, j);
+            scanf(" %c", &choice);
+            if (choice == 'y') {
+                graph[i] = insert(graph[i], j);
+            }
+        }
+    }
+}
+
+void printGraph(struct node* graph[], int n) {
+    for (int i = 0; i < n; i++) {
+        struct node* temp = graph[i];
+        printf("Adjacency list for vertex %d: ", i);
+        while (temp != NULL) {
+            printf("%d -> ", temp->data);
+            temp = temp->next;
+        }
+        printf("NULL\n");
+    }
+}
+
+void DFS(struct node* graph[], int visited[], int n, int start) {
+    if (visited[start] == 0) {
+        printf("%d ", start);
+        visited[start] = 1;
+        struct node* temp = graph[start];
+        while (temp != NULL) {
+            if (visited[temp->data] == 0) {
+                DFS(graph, visited, n, temp->data);
+            }
+            temp = temp->next;
+        }
+    }
+}
+
+void BFS(struct node* graph[], int visited[], int n, int start) {
+    struct queue* q = createQueue(n);
+    printf("%d ", start);
+    enqueue(q, start);
+    visited[start] = 1;
+
+    while (q->size != 0) {
+        int current = dequeue(q);
+        struct node* temp = graph[current];
+        while (temp != NULL) {
+            if (visited[temp->data] == 0) {
+                printf("%d ", temp->data);
+                visited[temp->data] = 1;
+                enqueue(q, temp->data);
+            }
+            temp = temp->next;
+        }
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+    struct node* graph[n];
+    int visited[n];
+    createGraph(graph, n);
+    printGraph(graph, n);
+    
+    for (int i = 0; i < n; i++) {
+        visited[i] = 0;
+    }
+
+    printf("\nDFS: ");
+    DFS(graph, visited, n, 0);
+
+    
+    for (int i = 0; i < n; i++) {
+        visited[i] = 0;
+    }
+
+    printf("\nBFS: ");
+    BFS(graph, visited, n, 0);
+
+    return 0;
+}
