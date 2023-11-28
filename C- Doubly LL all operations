@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node{
+    int data;
+    struct Node* next;
+    struct Node* prev;
+};
+
+struct Node* createNode(int data){
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+    
+    return newNode;
+}
+
+void insert(struct Node** head, int data){
+    struct Node* newNode = createNode(data);
+    if(*head == NULL){
+        *head = newNode;
+        return;
+    }
+    struct Node* current = *head;
+
+    while(current->next!=NULL){
+        current = current->next;
+    }
+    newNode->prev = current;
+    current->next = newNode;
+    newNode->next = NULL;
+}
+void insertPos (struct Node** head, int data, int position){
+    struct Node* newNode = createNode(data);
+    struct Node* current = *head;
+    for(int i=0 ; i<position-1; i++){
+        current = current->next;
+    }
+    newNode->next = current->next;
+    current->next = newNode;
+    newNode->prev= current;
+    
+}
+
+void sort(struct Node** head){
+  
+    struct Node *i, *j;
+    int temp;
+    for(i= *head; i!=NULL;i=i->next){
+        for(j= i->next; j!=NULL;j=j->next){
+            if(i->data > j->data){
+                temp = i->data;
+                i->data = j->data;
+                j->data = temp;
+            }
+        }
+    }
+  
+}
+
+struct Node* concat(struct Node *head1, struct Node *head2){
+    struct Node* start = head1;
+    struct Node* h1 = head1;
+    struct Node* h2 = head2;
+    while(h1->next != NULL){
+        h1 =h1->next;
+    }
+    h1->next = h2;
+    h2->prev = h1;
+    return start;
+}
+void PrintList(struct Node* head){
+    struct Node* curr = head;
+    
+    while(curr!= NULL){
+        printf("%d<->",curr->data );
+        curr= curr->next;
+    }
+    printf("NULL");
+    printf("\n");
+}
+
+int main(){
+    
+    struct Node* head1 = NULL;
+    struct Node* head2 = NULL;
+    int n , data;
+    printf("enter the number of elements\n");
+    scanf("%d", &n);
+    printf("Enter the elements for 1st\n");
+    for(int i=0;i<n; i++ ){
+        scanf("%d",&data);
+        insert(&head1, data);
+    }
+     printf("Enter the elements for 2nd\n");
+    for(int i=0;i<n; i++ ){
+        scanf("%d",&data);
+        insert(&head2, data);
+    }
+    PrintList(head1);
+    
+    PrintList(head2);
+    PrintList(concat(head1, head2));
+    return 0;
+}
