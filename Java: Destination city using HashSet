@@ -1,0 +1,20 @@
+class Solution {
+    public String destCity(List<List<String>> paths) {
+         int x = paths.size();
+         HashSet<String> set = new HashSet<>();
+        //CREATE A HASHSET
+        // In hashset add first element of each list of list
+         for(int i=0; i<x; i++){
+             set.add(paths.get(i).get(0));
+         }
+        //check second element of each list of list in hashset
+         for(int i=0; i<x; i++){
+             if(!set.contains(paths.get(i).get(1))){
+                 //if it doesnt contain it is destination and return
+                 return paths.get(i).get(1);
+             }
+         }
+
+         return "";
+    }
+}
